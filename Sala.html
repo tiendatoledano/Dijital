@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FG-Studio | Catálogos Digitales Futuristas</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<style>
+:root {
+  --teal: #00e5c8;
+  --teal-dim: rgba(0,229,200,0.12);
+  --blue: #3b82f6;
+  --violet: #7c3aed;
+  --bg: #050810;
+  --bg2: #080d1a;
+  --surface: rgba(12,18,35,0.75);
+  --border: rgba(0,229,200,0.18);
+  --border-hover: rgba(0,229,200,0.55);
+  --text: #eef2ff;
+  --muted: #7b8db0;
+  --radius: 1.5rem;
+  --radius-sm: 0.9rem;
+  --transition: all 0.45s cubic-bezier(0.16,1,0.3,1);
+  --glow: 0 0 30px rgba(0,229,200,0.25), 0 0 60px rgba(59,130,246,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  overflow-x:hidden;
+  line-height:1.65;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:1;
+  opacity:0.4;
+}
+
+/* ── CANVAS ── */
+#particles-canvas{
+  position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  pointer-events:none;z-index:0;
+}
+
+/* ── BLOBS ── */
+.blob{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(100px);
+  pointer-events:none;
+  z-index:0;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.blob-1{
+  width:55vw;height:55vw;
+  top:-20%;left:-15%;
+  background:radial-gradient(circle,rgba(0,229,200,0.14) 0%,transparent 70%);
+}
+.blob-2{
+  width:50vw;height:50vw;
+  bottom:-15%;right:-10%;
+  background:radial-gradient(circle,rgba(59,130,246,0.14) 0%,transparent 70%);
+  animation-duration:28s;
+}
+.blob-3{
+  width:30vw;height:30vw;
+  top:40%;left:50%;
+  background:radial-gradient(circle,rgba(124,58,237,0.1) 0%,transparent 70%);
+  animation-duration:18s;
+}
+@keyframes blobFloat{
+  0%{transform:translate(0,0) scale(1);}
+  100%{transform:translate(4%,7%) scale(1.15);}
+}
+
+/* ── NAV ── */
+.navbar-custom{
+  position:sticky;top:0;
+  padding:1rem 0;
+  background:rgba(5,8,16,0.7);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  z-index:100;
+  transition:var(--transition);
+}
+.nav-brand{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:1.5rem;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  letter-spacing:-0.02em;
+}
+.nav-pill{
+  background:var(--teal-dim);
+  border:1px solid var(--border);
+  color:var(--teal);
+  padding:0.45rem 1.2rem;
+  border-radius:40px;
+  font-size:0.82rem;
+  font-weight:500;
+  text-decoration:none;
+  transition:var(--transition);
+  white-space:nowrap;
+}
+.nav-pill:hover{
+  background:var(--teal);
+  color:#000;
+  box-shadow:0 0 20px rgba(0,229,200,0.4);
+}
+.nav-links a{
+  color:var(--muted);
+  text-decoration:none;
+  font-size:0.88rem;
+  font-weight:500;
+  transition:color 0.2s;
+}
+.nav-links a:hover{color:var(--text);}
+
+/* ── HERO ── */
+.hero{
+  position:relative;
+  z-index:2;
+  padding:7rem 0 4rem;
+  text-align:center;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:rgba(0,229,200,0.08);
+  border:1px solid rgba(0,229,200,0.35);
+  padding:0.4rem 1.1rem;
+  border-radius:100px;
+  font-size:0.75rem;
+  font-weight:600;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--teal);
+  margin-bottom:2rem;
+  animation:fadeSlideDown 0.8s ease both;
+}
+.hero-eyebrow .dot{
+  width:6px;height:6px;
+  background:var(--teal);
+  border-radius:50%;
+  animation:pulseDot 2s ease-in-out infinite;
+}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.6);}}
+
+.hero-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.8rem,6vw,5.5rem);
+  font-weight:800;
+  line-height:1.05;
+  letter-spacing:-0.03em;
+  margin-bottom:1.5rem;
+  animation:fadeSlideDown 0.9s 0.1s ease both;
+}
+.hero-title .line-1{
+  display:block;
+  background:linear-gradient(100deg,#ffffff 30%,#c7d2fe);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero-title .line-2{
+  display:block;
+  background:linear-gradient(100deg,var(--teal),var(--blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+.hero-sub{
+  font-size:1.05rem;
+  color:var(--muted);
+  max-width:520px;
+  margin:0 auto 2.5rem;
+  animation:fadeSlideDown 1s 0.2s ease both;
+}
+
+.hero-actions{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:1rem;
+  animation:fadeSlideDown 1s 0.3s ease both;
+}
+.btn-glow{
+  background:linear-gradient(135deg,var(--teal),#00c4ad);
+  color:#000;
+  font-weight:700;
+  font-size:0.9rem;
+  padding:0.75rem 2rem;
+  border-radius:100px;
+  border:none;
+  transition:var(--transition);
+  text-decoration:none;
+  box-shadow:0 0 0 rgba(0,229,200,0);
+}
+.btn-glow:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(0,229,200,0.45);
+  color:#000;
+}
+.btn-ghost{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.2);
+  color:var(--text);
+  font-size:0.9rem;
+  padding:0.75rem 2rem;
+  border-radius:100px;
+  transition:var(--transition);
+  text-decoration:none;
+}
+.btn-ghost:hover{
+  border-color:var(--teal);
+  color:var(--teal);
+  background:var(--teal-dim);
+}
+
+/* ── FLIP CARD ── */
+.flip-wrapper{
+  position:relative;
+  z-index:2;
+  max-width:820px;
+  margin:3.5rem auto 0;
+  animation:fadeSlideDown 1s 0.4s ease both;
+}
+.flip-container{
+  perspective:1600px;
+  cursor:pointer;
+}
+.flipper{
+  width:100%;
+  padding-bottom:52%;
+  position:relative;
+  transition:transform 0.9s cubic-bezier(0.23,1,0.32,1);
+  transform-style:preserve-3d;
+}
+.flip-container:hover .flipper{transform:rotateY(180deg);}
+.flip-face{
+  position:absolute;inset:0;
+  border-radius:var(--radius);
+  overflow:hidden;
+  backface-visibility:hidden;
+  border:1px solid var(--border);
+  box-shadow:var(--glow), 0 40px 60px rgba(0,0,0,0.6);
+}
+.flip-face.back{transform:rotateY(180deg);}
+.flip-face img{width:100%;height:100%;object-fit:cover;display:block;}
+.flip-hint{
+  position:absolute;
+  bottom:1rem;right:1rem;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--border);
+  border-radius:40px;
+  padding:0.35rem 0.9rem;
+  font-size:0.73rem;
+  color:var(--teal);
+  pointer-events:none;
+  opacity:0.8;
+}
+
+/* ── SECTION HEADER ── */
+.section-header{
+  text-align:center;
+  margin-bottom:3rem;
+}
+.section-label{
+  display:inline-block;
+  font-size:0.72rem;
+  font-weight:700;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--teal);
+  margin-bottom:0.7rem;
+}
+.section-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.8rem,3.5vw,2.8rem);
+  font-weight:800;
+  letter-spacing:-0.025em;
+  background:linear-gradient(120deg,var(--text) 50%,var(--muted));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.section-line{
+  width:50px;height:2px;
+  background:linear-gradient(90deg,var(--teal),var(--blue));
+  margin:0.9rem auto 0;
+  border-radius:2px;
+}
+
+/* ── FILTER BAR ── */
+.filter-bar{
+  background:var(--surface);
+  backdrop-filter:blur(16px);
+  border:1px solid var(--border);
+  border-radius:80px;
+  padding:0.5rem 0.5rem 0.5rem 1.5rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.5rem;
+  align-items:center;
+  margin-bottom:2rem;
+}
+.search-input{
+  flex:1;min-width:120px;
+  background:transparent;
+  border:none;
+  color:var(--text);
+  font-size:0.9rem;
+  outline:none;
+  font-family:'DM Sans',sans-serif;
+}
+.search-input::placeholder{color:var(--muted);}
+.filter-chips{
+  display:flex;flex-wrap:wrap;gap:0.4rem;
+  align-items:center;
+}
+.filter-chip{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.1);
+  padding:0.4rem 1rem;
+  border-radius:40px;
+  color:var(--muted);
+  font-size:0.8rem;
+  font-weight:500;
+  cursor:pointer;
+  transition:var(--transition);
+}
+.filter-chip.active,
+.filter-chip:hover{
+  background:var(--teal);
+  border-color:var(--teal);
+  color:#000;
+  font-weight:700;
+}
+.reset-btn{
+  background:transparent;
+  border:1px solid var(--blue);
+  padding:0.4rem 1rem;
+  border-radius:40px;
+  color:var(--blue);
+  font-size:0.8rem;
+  cursor:pointer;
+  transition:0.2s;
+}
+.reset-btn:hover{background:var(--blue);color:#fff;}
+
+/* ── SWIPER CARDS ── */
+.catalog-swiper{
+  width:100%;
+  padding:2rem 0 3.5rem;
+  overflow:hidden;
+}
+.catalog-swiper .swiper-slide{
+  width:300px;
+  opacity:0.5;
+  transform:scale(0.88);
+  transition:all 0.5s ease;
+}
+.catalog-swiper .swiper-slide-active{
+  opacity:1;
+  transform:scale(1);
+}
+.catalog-card{
+  background:var(--surface);
+  backdrop-filter:blur(14px);
+  border-radius:var(--radius);
+  overflow:hidden;
+  border:1px solid var(--border);
+  transition:var(--transition);
+  box-shadow:0 12px 30px rgba(0,0,0,0.4);
+}
+.catalog-card:hover{
+  border-color:var(--border-hover);
+  box-shadow:0 0 25px rgba(0,229,200,0.2), 0 20px 40px rgba(0,0,0,0.5);
+  transform:translateY(-6px);
+}
+.catalog-img{
+  width:100%;height:230px;
+  object-fit:cover;
+  transition:transform 0.6s ease;
+}
+.catalog-card:hover .catalog-img{transform:scale(1.04);}
+.catalog-info{
+  padding:1.4rem;
+}
+.cat-badge{
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--teal);
+  background:var(--teal-dim);
+  border:1px solid rgba(0,229,200,0.25);
+  padding:0.25rem 0.7rem;
+  border-radius:40px;
+  margin-bottom:0.6rem;
+  display:inline-block;
+}
+.catalog-title{
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:1.1rem;
+  margin-bottom:0.3rem;
+}
+.catalog-desc{
+  font-size:0.8rem;
+  color:var(--muted);
+  margin-bottom:0.9rem;
+}
+.catalog-link{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  font-size:0.82rem;
+  font-weight:600;
+  color:var(--teal);
+  text-decoration:none;
+  transition:gap 0.2s;
+}
+.catalog-link:hover{gap:0.7rem;color:var(--teal);}
+
+/* ── FEATURES ── */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1.5rem;
+}
+.feature-card{
+  background:var(--surface);
+  backdrop-filter:blur(12px);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:2.2rem 1.8rem;
+  transition:var(--transition);
+  position:relative;
+  overflow:hidden;
+}
+.feature-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,var(--teal),var(--blue));
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.feature-card:hover{
+  border-color:var(--border-hover);
+  transform:translateY(-8px);
+  box-shadow:0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(0,229,200,0.1);
+}
+.feature-card:hover::before{opacity:1;}
+.feature-icon-wrap{
+  width:52px;height:52px;
+  background:var(--teal-dim);
+  border:1px solid var(--border);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  color:var(--teal);
+  margin-bottom:1.2rem;
+  transition:var(--transition);
+}
+.feature-card:hover .feature-icon-wrap{
+  background:var(--teal);
+  color:#000;
+  box-shadow:0 0 20px rgba(0,229,200,0.4);
+}
+.feature-title{
+  font-family:'Syne',sans-serif;
+  font-size:1.05rem;
+  font-weight:700;
+  margin-bottom:0.5rem;
+}
+.feature-desc{color:var(--muted);font-size:0.88rem;line-height:1.6;}
+
+/* ── STATS ── */
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:1rem;
+  margin:4rem 0;
+}
+.stat-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:1.8rem 1.2rem;
+  text-align:center;
+  transition:var(--transition);
+}
+.stat-card:hover{
+  border-color:var(--border-hover);
+  transform:translateY(-4px);
+}
+.stat-number{
+  font-family:'Syne',sans-serif;
+  font-size:2.2rem;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.stat-label{
+  font-size:0.8rem;
+  color:var(--muted);
+  margin-top:0.3rem;
+}
+
+/* ── MANIFESTO ── */
+.manifesto{
+  position:relative;
+  background:linear-gradient(135deg,rgba(0,229,200,0.06),rgba(59,130,246,0.06));
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:4rem 3rem;
+  text-align:center;
+  overflow:hidden;
+}
+.manifesto::after{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  border-radius:var(--radius);
+  background:linear-gradient(135deg,rgba(0,229,200,0.2),transparent 50%,rgba(59,130,246,0.15));
+  pointer-events:none;
+  mask:linear-gradient(#fff,#fff) content-box, linear-gradient(#fff,#fff);
+  mask-composite:exclude;
+  padding:1px;
+}
+.manifesto-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:800;
+  letter-spacing:-0.02em;
+  margin-bottom:1rem;
+}
+.manifesto-body{
+  font-size:1rem;
+  color:var(--muted);
+  max-width:600px;
+  margin:0 auto 2rem;
+}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;
+  z-index:2;
+  background:rgba(5,8,16,0.9);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+  padding:4rem 0 2rem;
+  margin-top:5rem;
+}
+.footer-brand{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:1.4rem;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:0.8rem;
+}
+.footer-desc{font-size:0.88rem;color:var(--muted);margin-bottom:1.5rem;}
+.social-links{display:flex;gap:0.8rem;}
+.social-link{
+  width:36px;height:36px;
+  background:var(--teal-dim);
+  border:1px solid var(--border);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--teal);
+  font-size:0.95rem;
+  text-decoration:none;
+  transition:var(--transition);
+}
+.social-link:hover{
+  background:var(--teal);
+  color:#000;
+  box-shadow:0 0 15px rgba(0,229,200,0.4);
+  border-color:var(--teal);
+}
+.footer-heading{
+  font-family:'Syne',sans-serif;
+  font-size:0.85rem;
+  font-weight:700;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--text);
+  margin-bottom:1rem;
+}
+.footer-links{list-style:none;padding:0;}
+.footer-links li{margin-bottom:0.6rem;}
+.footer-links a{
+  color:var(--muted);
+  font-size:0.88rem;
+  text-decoration:none;
+  transition:color 0.2s;
+}
+.footer-links a:hover{color:var(--teal);}
+.footer-links li.text-item{color:var(--muted);font-size:0.88rem;}
+.footer-hr{border-color:rgba(255,255,255,0.06);margin:2rem 0 1.5rem;}
+.footer-copy{color:var(--muted);font-size:0.8rem;text-align:center;}
+
+/* ── SCROLL TOP ── */
+.scroll-top{
+  position:fixed;
+  bottom:28px;right:28px;
+  width:44px;height:44px;
+  background:linear-gradient(135deg,var(--teal),var(--blue));
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  color:#000;
+  font-size:1rem;
+  cursor:pointer;
+  opacity:0;transform:translateY(10px);
+  transition:0.3s;
+  z-index:200;
+  box-shadow:0 4px 20px rgba(0,229,200,0.3);
+}
+.scroll-top.active{opacity:1;transform:translateY(0);}
+
+/* ── SWIPER PAGINATION ── */
+.swiper-pagination-bullet{
+  background:var(--muted);
+  opacity:1;
+  width:6px;height:6px;
+}
+.swiper-pagination-bullet-active{
+  background:var(--teal);
+  width:20px;
+  border-radius:3px;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeSlideDown{
+  from{opacity:0;transform:translateY(-20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.animate-fade{
+  opacity:0;transform:translateY(28px);
+  transition:opacity 0.8s ease, transform 0.8s ease;
+}
+.animate-fade.visible{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .hero{padding:5rem 0 2.5rem;}
+  .filter-bar{border-radius:var(--radius-sm);padding:1rem;}
+  .manifesto{padding:2.5rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles-canvas"></canvas>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- NAV -->
+<nav class="navbar-custom">
+  <div class="container d-flex align-items-center justify-content-between gap-3">
+    <span class="nav-brand"><i class="fas fa-cube me-2" style="font-size:1rem;"></i>FG-Studio</span>
+    <div class="nav-links d-none d-md-flex gap-4">
+      <a href="#">Inicio</a>
+      <a href="hacercade.html">Nosotros</a>
+      <a href="contactar.html">Contacto</a>
+    </div>
+    <a href="contactar.html" class="nav-pill"><i class="fas fa-arrow-right me-1" style="font-size:0.75rem;"></i> Contáctanos</a>
+  </div>
+</nav>
+
+<main>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      Innovación 4.0 · IA · Automatización
+    </div>
+    <h1 class="hero-title">
+      <span class="line-1">Revolucione su Negocio</span>
+      <span class="line-2">Catálogos Digitales Inteligentes</span>
+    </h1>
+    <p class="hero-sub">Automatización con IA · Diseño 3D · Conversión asegurada. El futuro de tu marca comienza aquí.</p>
+    <div class="hero-actions">
+      <a href="hacercade.html" class="btn-glow"><i class="fas fa-info-circle me-2"></i>Conoce más</a>
+      <a href="contactar.html" class="btn-ghost"><i class="fas fa-envelope me-2"></i>Contáctanos</a>
+    </div>
+
+    <!-- FLIP CARD -->
+    <div class="flip-wrapper">
+      <div class="flip-container">
+        <div class="flipper">
+          <div class="flip-face front">
+            <img src="https://i.ibb.co/LDG7Gf2d/fotor-ai-2025020222510.jpg" alt="FG-Studio banner">
+            <div class="flip-hint"><i class="fas fa-sync-alt me-1" style="font-size:0.65rem;"></i>Hover para rotar</div>
+          </div>
+          <div class="flip-face back">
+            <img src="https://image2url.com/r2/default/images/1774574969101-c816d5fe-1e85-4cd1-9075-77a8006efbfd.png" alt="FG-Studio back">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row animate-fade">
+    <div class="stat-card"><div class="stat-number">200+</div><div class="stat-label">Catálogos activos</div></div>
+    <div class="stat-card"><div class="stat-number">98%</div><div class="stat-label">Clientes satisfechos</div></div>
+    <div class="stat-card"><div class="stat-number">3×</div><div class="stat-label">Más conversiones</div></div>
+    <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Soporte activo</div></div>
+  </div>
+
+  <!-- CATÁLOGOS -->
+  <div class="mt-5 animate-fade">
+    <div class="section-header">
+      <div class="section-label">Portafolio</div>
+      <h2 class="section-title">Catálogos Experienciales</h2>
+      <div class="section-line"></div>
+      <p class="mt-3" style="color:var(--muted);font-size:0.9rem;">Desliza para explorar · Transición automática cada 4 segundos</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filter-bar">
+      <i class="fas fa-search" style="color:var(--muted);font-size:0.9rem;"></i>
+      <input class="search-input" id="searchInput" type="text" placeholder="Buscar catálogo…">
+      <div class="filter-chips">
+        <button class="filter-chip active" data-cat="all">Todos</button>
+        <button class="filter-chip" data-cat="moda">Moda</button>
+        <button class="filter-chip" data-cat="belleza">Belleza</button>
+        <button class="filter-chip" data-cat="inventario">Inventario</button>
+        <button class="filter-chip" data-cat="servicios">Servicios</button>
+        <button class="filter-chip" data-cat="regalos">Regalos</button>
+        <button class="filter-chip" data-cat="hogar">Hogar</button>
+        <button class="reset-btn" id="resetFilters"><i class="fas fa-undo me-1"></i>Reset</button>
+      </div>
+    </div>
+
+    <div class="catalog-swiper swiper">
+      <div class="swiper-wrapper" id="catalogSwiperWrapper"></div>
+      <div class="swiper-pagination mt-2"></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="mt-5 animate-fade">
+    <div class="section-header">
+      <div class="section-label">Tecnología</div>
+      <h2 class="section-title">¿Por qué FG-Studio?</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><i class="fas fa-brain"></i></div>
+        <div class="feature-title">IA Predictiva</div>
+        <p class="feature-desc">Algoritmos que anticipan tendencias y optimizan tu inventario automáticamente.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><i class="fas fa-vr-cardboard"></i></div>
+        <div class="feature-title">Realidad Aumentada</div>
+        <p class="feature-desc">Visualiza productos en 3D antes de comprar, experiencia totalmente inmersiva.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><i class="fas fa-chart-line"></i></div>
+        <div class="feature-title">Automatización Total</div>
+        <p class="feature-desc">Integración con WhatsApp, redes y e-commerce sin ninguna línea de código.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><i class="fas fa-shield-alt"></i></div>
+        <div class="feature-title">Seguridad Avanzada</div>
+        <p class="feature-desc">Cifrado de extremo a extremo y protección de datos certificada.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><i class="fas fa-bolt"></i></div>
+        <div class="feature-title">Ultra Rápido</div>
+        <p class="feature-desc">Carga en menos de 1 segundo. Optimizado para móviles y desktop.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><i class="fas fa-headset"></i></div>
+        <div class="feature-title">Soporte 24/7</div>
+        <p class="feature-desc">Equipo experto disponible siempre para resolver cualquier consulta.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANIFESTO -->
+  <div class="manifesto my-6 mt-5 animate-fade">
+    <div class="section-label" style="margin-bottom:1rem;">Nuestra visión</div>
+    <h3 class="manifesto-title">
+      <i class="fas fa-satellite-dish me-2" style="color:var(--teal);"></i>Misión 2030
+    </h3>
+    <p class="manifesto-body">Automatizamos tu negocio con catálogos que venden por ti. Diseño vanguardista, conversión inteligente y soporte galáctico. El futuro de tu marca comienza aquí.</p>
+    <a href="contactar.html" class="btn-glow"><i class="fas fa-rocket me-2"></i>Empezar ahora</a>
+  </div>
+
+</div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <div class="footer-brand"><i class="fas fa-cube me-2" style="font-size:1rem;"></i>FG-Studio</div>
+        <p class="footer-desc">Especialistas en catálogos digitales profesionales y automatización comercial.</p>
+        <div class="social-links">
+          <a href="https://www.facebook.com/fgstudio" target="_blank" rel="noopener" class="social-link"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/fgstudio" target="_blank" rel="noopener" class="social-link"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/5353571569?text=Hola%20FG-Studio%2C%20quiero%20información" target="_blank" rel="noopener" class="social-link"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="footer-heading">Navegación</div>
+        <ul class="footer-links">
+          <li><a href="#">Inicio</a></li>
+          <li><a href="hacercade.html">Nosotros</a></li>
+          <li><a href="contactar.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <div class="footer-heading">Servicios</div>
+        <ul class="footer-links">
+          <li class="text-item">Catálogos Digitales</li>
+          <li class="text-item">Automatización IA</li>
+          <li class="text-item">Realidad Aumentada</li>
+          <li class="text-item">E-commerce integrado</li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <div class="footer-heading">Contacto</div>
+        <ul class="footer-links">
+          <li><a href="mailto:webstudioxz@gmail.com"><i class="fas fa-envelope me-2" style="color:var(--teal);width:16px;"></i>webstudioxz@gmail.com</a></li>
+          <li class="text-item"><i class="fas fa-phone me-2" style="color:var(--teal);width:16px;"></i>+53 5357-15-69</li>
+          <li class="text-item"><i class="fas fa-map-marker-alt me-2" style="color:var(--teal);width:16px;"></i>Centro Habana, Manrique #563</li>
+        </ul>
+      </div>
+    </div>
+    <hr class="footer-hr">
+    <div class="footer-copy">© 2025 FG-Studio · Futuro digital con propósito.</div>
+  </div>
+</footer>
+
+<div class="scroll-top" id="scrollTopBtn"><i class="fas fa-arrow-up"></i></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+const productsData = [
+  { id:1, name:"Tienda La Reina", category:"moda", link:"index.html", image:"https://d.top4top.io/p_3525b1u9b0.jpg", desc:"Ropa femenina exclusiva." },
+  { id:2, name:"Estilo y Belleza", category:"belleza", link:"peluquería.html", image:"https://l.top4top.io/p_3564rrpn21.jpg", desc:"Peluquería y cosmética." },
+  { id:3, name:"Inventario IPV", category:"inventario", link:"IPV.html", image:"https://a.top4top.io/p_3550p4e0j0.jpg", desc:"Gestión de stock avanzada." },
+  { id:4, name:"Mensajería Express", category:"servicios", link:"mensajeria.html", image:"https://l.top4top.io/p_359145fyk0.jpg", desc:"Envíos rápidos." },
+  { id:5, name:"Regalos & Detalles", category:"regalos", link:"regalos.html", image:"https://l.top4top.io/p_3517fhhys0.jpg", desc:"Regalos personalizados." },
+  { id:6, name:"Muebles Diseño", category:"hogar", link:"mueble.html", image:"https://c.top4top.io/p_35793w5gm0.jpg", desc:"Mobiliario moderno." },
+  { id:7, name:"Dulcería", category:"Cremeria", link:"dulcería.html", image:"https://j.top4top.io/p_3746tclkg0.jpg", desc:"Dulcería heladería." }
+];
+
+let currentFilter="all", searchTerm="", catalogSwiper=null;
+
+function renderCatalogSwiper(){
+  const wrapper=document.getElementById("catalogSwiperWrapper");
+  if(!wrapper)return;
+  let filtered=productsData.filter(p=>(currentFilter==="all"||p.category===currentFilter)&&(p.name.toLowerCase().includes(searchTerm.toLowerCase())||p.desc.toLowerCase().includes(searchTerm.toLowerCase())));
+  if(!filtered.length){
+    wrapper.innerHTML=`<div class="swiper-slide text-center p-5" style="color:var(--muted)"><i class="fas fa-search mb-3 d-block fs-2"></i>No hay catálogos con esos filtros</div>`;
+    if(catalogSwiper)catalogSwiper.update();
+    return;
+  }
+  wrapper.innerHTML=filtered.map(p=>`
+    <div class="swiper-slide">
+      <a href="${p.link}" class="text-decoration-none">
+        <div class="catalog-card">
+          <div style="overflow:hidden;">
+            <img src="${p.image}" class="catalog-img" alt="${p.name}" loading="lazy">
+          </div>
+          <div class="catalog-info">
+            <div class="cat-badge">${p.category.toUpperCase()}</div>
+            <div class="catalog-title">${p.name}</div>
+            <div class="catalog-desc">${p.desc}</div>
+            <span class="catalog-link">Explorar <i class="fas fa-arrow-right" style="font-size:0.75rem;"></i></span>
+          </div>
+        </div>
+      </a>
+    </div>`).join("");
+  if(catalogSwiper)catalogSwiper.destroy(true,true);
+  catalogSwiper=new Swiper('.catalog-swiper',{
+    effect:'coverflow',
+    grabCursor:true,
+    centeredSlides:true,
+    slidesPerView:'auto',
+    coverflowEffect:{rotate:25,stretch:0,depth:160,modifier:1.4,slideShadows:true},
+    loop:filtered.length>=3,
+    autoplay:{delay:4000,disableOnInteraction:false},
+    speed:900,
+    pagination:{el:'.swiper-pagination',clickable:true},
+    spaceBetween:20,
+    breakpoints:{640:{slidesPerView:2,centeredSlides:false},1024:{slidesPerView:3,centeredSlides:true}}
+  });
+}
+
+function initFilters(){
+  document.querySelectorAll(".filter-chip").forEach(chip=>{
+    chip.addEventListener("click",()=>{
+      document.querySelectorAll(".filter-chip").forEach(c=>c.classList.remove("active"));
+      chip.classList.add("active");
+      currentFilter=chip.dataset.cat;
+      renderCatalogSwiper();
+    });
+  });
+  document.getElementById("searchInput").addEventListener("input",e=>{searchTerm=e.target.value;renderCatalogSwiper();});
+  document.getElementById("resetFilters").addEventListener("click",()=>{
+    currentFilter="all";searchTerm="";
+    document.getElementById("searchInput").value="";
+    document.querySelectorAll(".filter-chip").forEach(c=>c.classList.remove("active"));
+    document.querySelector(".filter-chip[data-cat='all']").classList.add("active");
+    renderCatalogSwiper();
+  });
+}
+
+function initParticles(){
+  const canvas=document.getElementById('particles-canvas');
+  const ctx=canvas.getContext('2d');
+  const resize=()=>{canvas.width=window.innerWidth;canvas.height=window.innerHeight;};
+  resize();
+  const pts=Array.from({length:100},()=>({
+    x:Math.random()*canvas.width,y:Math.random()*canvas.height,
+    r:Math.random()*1.5+0.5,a:Math.random()*0.4+0.05,
+    sx:(Math.random()-0.5)*0.25,sy:(Math.random()-0.5)*0.2
+  }));
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pts.forEach(p=>{
+      p.x+=p.sx;p.y+=p.sy;
+      if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;
+      if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,229,200,${p.a})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+  window.addEventListener('resize',resize);
+}
+
+window.addEventListener("load",()=>{
+  renderCatalogSwiper();
+  initFilters();
+  initParticles();
+  const scrollBtn=document.getElementById("scrollTopBtn");
+  window.addEventListener("scroll",()=>scrollBtn.classList.toggle("active",scrollY>400));
+  scrollBtn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>e.isIntersecting&&e.target.classList.add("visible")),{threshold:0.15});
+  document.querySelectorAll(".animate-fade").forEach(el=>obs.observe(el));
+
+  // Number counter animation for stats
+  document.querySelectorAll('.stat-number').forEach(el=>{
+    const txt=el.textContent;
+    const num=parseFloat(txt.replace(/[^0-9.]/g,''));
+    if(!isNaN(num)){
+      let start=0;
+      const step=()=>{start=Math.min(start+num/40,num);el.textContent=txt.replace(/[0-9.]+/,start%1?start.toFixed(1):Math.round(start));if(start<num)requestAnimationFrame(step);};
+      setTimeout(step,300);
+    }
+  });
+});
+</script>
+</body>
+</html>
